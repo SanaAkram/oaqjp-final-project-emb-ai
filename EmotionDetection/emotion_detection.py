@@ -1,11 +1,21 @@
-import unittest
-from EmotionDetection.emotion_detection import emotion_detector
+import requests
 
-class TestEmotionDetection(unittest.TestCase):
+def emotion_detector(text_to_analyze):
+    """
+    Sends text to Watson NLP Emotion API and returns response text.
+    """
+    url = "https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict"
 
-    def test_joy(self):
-        result = emotion_detector("I am happy")
-        self.assertEqual(result["dominant_emotion"], "joy")
+    headers = {
+        "grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"
+    }
 
-if __name__ == "__main__":
-    unittest.main()
+    json_data = {
+        "raw_document": {
+            "text": text_to_analyze
+        }
+    }
+
+    response = requests.post(url, headers=headers, json=json_data)
+
+    return response.text
